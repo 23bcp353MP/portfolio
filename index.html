@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Mili Patel — Digital Portfolio</title>
+<style>
+:root{
+  --accent:#667eea;
+  --accent-2:#764ba2;
+  --glass:rgba(255,255,255,0.92);
+  --bg:linear-gradient(135deg,#eaf1ff 0%, #fdfbff 60%);
+  --muted:#5b6b80;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter, "Segoe UI", Poppins, system-ui, -apple-system, Roboto, Arial;background:var(--bg);color:#0f172a;scroll-behavior:smooth}
+.app{display:flex;min-height:100vh;gap:18px}
+
+/* --- FIXED TOC (correct one) --- */
+.toc-list li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(90deg, #6a85ff, #8367ff);
+    padding: 20px 24px;
+    border-radius: 16px;
+    margin-bottom: 18px;
+}
+
+.toc-number {
+    background: white;
+    color: #5a62ff;
+    font-weight: 700;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.toc-link {
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+/* Sidebar */
+.sidebar{width:280px;background:linear-gradient(180deg,var(--accent),#6bb9ff);color:#fff;padding:22px;flex-shrink:0;display:flex;flex-direction:column;gap:14px;border-radius:12px}
+.logo{width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,0.18);flex-shrink:0}
+.title{font-size:18px;font-weight:800}
+.subtitle{font-size:13px;opacity:0.95}
+.nav{margin-top:8px;flex:1;overflow:auto;padding-right:6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;color:white;text-decoration:none;font-weight:700;margin-bottom:6px;transition:all .18s}
+.nav a:hover{background:rgba(255,255,255,0.08);transform:translateX(6px)}
+.icon{width:36px;height:36;border-radius:8px;background:rgba(255,255,255,0.12);display:inline-flex;align-items:center;justify-content:center;font-size:18px}
+.footer{font-size:13px;opacity:0.95;padding-top:8px;border-top:1px solid rgba(255,255,255,0.06);margin-top:6px}
+
+/* Main area */
+.main{flex:1;overflow:auto;padding:28px 36px;position:relative}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.page-title{font-size:28px;color:var(--accent);font-weight:800}
+.shape-1,.shape-2{position:absolute;border-radius:50%;filter:blur(36px);opacity:0.28;z-index:0}
+.shape-1{width:240px;height:240px;background:#8bb4ff;left:6%;top:6%}
+.shape-2{width:360px;height:360px;background:#ffd1d1;right:6%;bottom:6%}
+
+/* Cover & TOC */
+.cover-page{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:white;min-height:86vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;border-radius:12px}
+.cover-photo{width:220px;height:220px;border-radius:50%;object-fit:cover;border:6px solid rgba(255,255,255,0.12);box-shadow:0 10px 30px rgba(0,0,0,0.25);margin-bottom:20px}
+.cover-page h1{font-size:3rem;margin-bottom:6px;text-shadow:2px 2px 6px rgba(0,0,0,0.25)}
+.cover-sub{font-size:1.1rem;opacity:0.95;margin-bottom:10px}
+.tagline{font-size:1.05rem;max-width:820px;margin:18px auto;padding:16px;background:rgba(255,255,255,0.08);border-radius:10px;font-style:italic}
+
+.continue-btn{margin-top:18px;padding:12px 26px;font-size:1.05rem;background:white;color:var(--accent);border-radius:50px;border:0;cursor:pointer;box-shadow:0 8px 24px rgba(2,6,23,0.12);text-decoration:none}
+
+.toc-page{background:#f8f9fa;padding:28px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.04)}
+.toc-container{max-width:980px;margin:0 auto}
+.toc-page h2{color:#2c3e50;font-size:2.4rem;text-align:center;margin-bottom:18px;border-bottom:3px solid rgba(102,126,234,0.12);padding-bottom:12px}
+
+/* Sections */
+.card{background:var(--glass);padding:18px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.06);margin-top:18px}
+.section{display:none;animation:fadeIn .32s ease both}
+.section.active{display:block}
+.profile{width:140px;height:140px;border-radius:50%;object-fit:cover;box-shadow:0 10px 30px rgba(2,6,23,0.08);margin-bottom:12px}
+.toc-table{width:100%;border-collapse:collapse;margin-top:12px}
+.toc-table th,.toc-table td{padding:10px 12px;border-bottom:1px solid rgba(15,23,42,0.06);text-align:left}
+.toc-table th{background:rgba(102,126,234,0.06);font-weight:700}
+
+.code-snippet{background:#0e1116;color:#d1d6db;padding:12px;border-radius:8px;overflow:auto;font-family:monospace;font-size:0.92rem}
+
+/* skills */
+.skills{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.skill-tag{background:var(--accent);color:white;padding:6px 12px;border-radius:20px;font-weight:700}
+
+/* projects */
+.project-card{background:white;padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.06);margin-bottom:14px;border-left:6px solid var(--accent)}
+.project-card img{max-width:100%;height:auto;border-radius:8px;margin:10px 0}
+
+/* swot */
+.swot-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+.swot-item{padding:14px;border-radius:10px;color:white}
+.swot-item.strengths{background:#27ae60}
+.swot-item.weaknesses{background:#e74c3c}
+.swot-item.opportunities{background:#3498db}
+.swot-item.threats{background:#e67e22}
+
+/* testimonial */
+.testimonial{background:white;padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.06);font-style:italic}
+
+/* buttons */
+.btn{display:inline-block;padding:8px 14px;background:var(--accent);color:white;border-radius:8px;text-decoration:none;margin-top:12px}
+
+/* footer */
+footer{background:#2c3e50;color:white;text-align:center;padding:18px;border-radius:10px;margin-top:20px}
+
+/* small screens */
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(max-width:980px){
+  .app{flex-direction:column;padding:12px}
+  .sidebar{width:100%;flex-direction:row;align-items:center;padding:12px;border-radius:10px;gap:10px}
+  .nav{display:none}
+  .main{padding:12px}
+  .cover-page{min-height:60vh;padding:20px}
+  .shape-1,.shape-2{display:none}
+}
+</style>
+
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR (used for post-TOC navigation) -->
+  <aside class="sidebar" aria-label="Site sidebar">
+    <div style="display:flex;gap:12px;align-items:center">
+      <div class="logo"><img src="images/ProfileP.jpeg" alt="Mili Patel" style="width:100%;height:100%;object-fit:cover"></div>
+      <div>
+        <div class="title">Mili Patel</div>
+        <div class="subtitle">CSE · Sem V · Pandit Deendayal Energy University</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      
+      <a href="#" data-target="about-me"><span class="icon">👤</span><span class="label">Introduction and Learning Philosophy</span></a>
+      <a href="#" data-target="resume"><span class="icon">📄</span><span class="label">Resume</span></a>
+      <a href="#" data-target="skills"><span class="icon">🛠️</span><span class="label">Skills</span></a>
+      <a href="#" data-target="projects"><span class="icon">📁</span><span class="label">Projects</span></a>
+      <a href="#" data-target="certs"><span class="icon">🏅</span><span class="label">Certifications</span></a>
+      <a href="#" data-target="leadership"><span class="icon">🎯</span><span class="label">Leadership</span></a>
+      <a href="#" data-target="global"><span class="icon">🌍</span><span class="label">Global Issue</span></a>
+      <a href="#" data-target="ethics"><span class="icon">🔐</span><span class="label">Ethics</span></a>
+      <a href="#" data-target="goals"><span class="icon">🚀</span><span class="label">Goals</span></a>
+      <a href="#" data-target="swot"><span class="icon">📊</span><span class="label">SWOT</span></a>
+      <a href="#" data-target="testimonial"><span class="icon">💬</span><span class="label">Testimonial</span></a>
+      <a href="#" data-target="contact"><span class="icon">✉️</span><span class="label">Contact</span></a>
+    </nav>
+
+    <div class="footer">Portfolio • Mili Patel<br>Created: 16 Nov 2025</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" id="main">
+    <div class="shape-1"></div><div class="shape-2"></div>
+
+    <!-- COVER PAGE: full-screen style -->
+    <section id="cover-page" class="card section active" aria-label="Cover page">
+      <div class="cover-page">
+        <img class="cover-photo" src="ProfileP.jpeg" alt="Mili Patel Photo">
+        <h1>Mili Patel</h1>
+        <p class="subtitle">Computer Engineering V — Pandit Deendayal Energy University</p>
+        <p class="subtitle">Expected Graduation: 2027 · CGPA: 8.84</p>
+        <p class="tagline">"Aspiring developer passionate about creating innovative web solutions and analyzing data to inform decisions."</p>
+        <a class="continue-btn" href="#table-of-contents" onclick="openTOC()">View Portfolio →</a>
+      </div>
+    </section>
+
+    <!-- TABLE OF CONTENTS-->
+<section id="table-of-contents" class="card section" aria-label="Table of contents">
+  <div class="toc-page">
+    <div class="toc-container">
+      <h2>Table of Contents</h2>
+
+      <ol class="toc-list">
+        <li><span class="toc-number">1</span><a class="toc-link"  href="#about-me" onclick="openSectionFromTOC('about-me')">Introduction and Learning Philosophy</a></li>
+        <li><span class="toc-number">2</span><a class="toc-link" href="#resume" onclick="openSectionFromTOC('resume')">Resume / Curriculum Vitae</a></li>
+        <li><span class="toc-number">3</span><a class="toc-link" href="#projects" onclick="openSectionFromTOC('projects')">Interdisciplinary Projects and Research</a></li>
+        <li><span class="toc-number">4</span><a class="toc-link" href="#skills" onclick="openSectionFromTOC('skills')">Advanced Skill Development and Mastery</a></li>
+        <li><span class="toc-number">5</span><a class="toc-link" href="#leadership" onclick="openSectionFromTOC('leadership')">Collaborative and Leadership Experiences</a></li>
+        <li><span class="toc-number">6</span><a class="toc-link" href="#ethics" onclick="openSectionFromTOC('ethics')">Global Awareness and Ethical Considerations</a></li>
+        <li><span class="toc-number">7</span><a class="toc-link" href="#future" onclick="openSectionFromTOC('future')">Future Aspirations and Professional Development</a></li>
+        <li><span class="toc-number">8</span><a class="toc-link" href="#swot" onclick="openSectionFromTOC('swot')">SWOT Analysis</a></li>
+        <li><span class="toc-number">9</span><a class="toc-link" href="#conclusion" onclick="openSectionFromTOC('conclusion')">Conclusion and Self-Assessment</a></li>
+        <li><span class="toc-number">10</span><a class="toc-link" href="#testimonial" onclick="openSectionFromTOC('testimonial')">Testimonial</a></li>
+        <li><span class="toc-number">11</span><a class="toc-link" href="#contact" onclick="openSectionFromTOC('contact')">Contact</a></li>
+      </ol>
+
+    </div>
+  </div>
+</section>
+
+
+
+    <!-- ABOUT ME (separate as requested) -->
+    <section id="about-me" class="section card" aria-label="About me">
+      <div class="header-row"><div class="page-title">Welcome to My Portfolio</div></div>
+      <div class="card content">
+        
+        <h1>Introduction and Learning Philosophy</h1>
+<div class="cover-letter" style="padding:20px 40px; background:white; margin:30px 60px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+<p>
+            My journey in computer engineering began with a fascination for how technology shapes modern life. 
+            Throughout my academic career, I've developed a strong foundation in web development, database management, 
+            and software engineering principles. My core values center around continuous learning, innovative 
+            problem-solving, and creating practical solutions that address real-world challenges.
+        </p>
+        <p>
+            My learning philosophy is rooted in hands-on experience combined with theoretical understanding. 
+            I believe that the best way to master technology is through iterative development—building, breaking, 
+            debugging, and improving. This approach has guided my work on projects like the Smart Event Management 
+            System, where I integrated frontend and backend technologies to create a functional web application 
+            using PHP, MySQL, HTML, and CSS with XAMPP as my local development environment.
+        </p>
+        <p>
+            What drives my curiosity is the intersection of user needs and technical capabilities. I approach 
+            technical challenges by first understanding the problem domain, researching best practices through 
+            documentation and online resources, and then implementing solutions with security and scalability 
+            in mind. My intellectual framework emphasizes the importance of clean code, proper documentation, 
+            and continuous testing—principles that will serve me throughout my career.
+        </p>
+        <p>
+            The philosophical underpinnings of my academic pursuits stem from a belief that technology should 
+            empower people and solve meaningful problems. Whether I'm debugging authentication errors late at 
+            night or designing database schemas, I remain committed to understanding not just the "how" but also 
+            the "why" behind every technical decision. This mindset of persistent inquiry and self-directed 
+            learning has shaped my evolution from a student learning basic HTML to a developer capable of 
+            building complete web applications.
+        </p>
+
+
+        <p><strong>Personal Interests:</strong></p>
+        <ul>
+          <li>Backend development and authentication systems</li>
+          <li>Clean UI designing and responsive layouts</li>
+          <li>Database architecture and optimization</li>
+          <li>Python scripting and data visualization</li>
+          <li>Cybersecurity and secure coding practices</li>
+        </ul>
+        <a class="btn" href="#" data-target="resume" onclick="showSection('resume')">➡ View Resume</a>
+      </div>
+    </section>
+
+    <!-- RESUME / CV -->
+    <section id="resume" class="section card" aria-label="Resume">
+      <div class="page-title">Resume / Curriculum Vitae</div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
+          <div class="resume-item">
+            <h4>📚 Education</h4>
+            <p><strong>Pandit Deendayal Energy University</strong><br>Computer Science Engineering — Semester V<br>Expected Graduation: 2027</p>
+            <h4>Relevant Coursework</h4>
+            <ul>
+              <li>Web Technologies & Development</li>
+              <li>Database Management Systems</li>
+              <li>Python Programming</li>
+              <li>Network Security & Cryptography</li>
+              <li>Exploratory Data Analysis (EDA)</li>
+            </ul>
+          </div>
+
+          <div class="resume-item">
+            <h4>💻 Technical Skills</h4>
+            <ul>
+              <li>Python, C</li>
+              <li>SQL, Pandas, NumPy</li>
+              <li>Data Visualization (Matplotlib)</li>
+              <li>HTML, CSS, JavaScript</li>
+              <li>PHP, MySQL</li>
+            </ul>
+
+            <h4>Tools & Platforms</h4>
+            <ul>
+              <li>XAMPP, phpMyAdmin</li>
+              <li>Git & GitHub</li>
+              <li>VS Code</li>
+            </ul>
+          </div>
+
+          <div class="resume-item">
+            <h4>🎯 Soft Skills & Hobbies</h4>
+            <ul>
+              <li>Problem-solving & Debugging</li>
+              <li>Teamwork & Communication</li>
+              <li>Time Management</li>
+              <li>Hobbies: Dancing, Drawing, Digital Art</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <h4>🚀 Major Projects (summary)</h4>
+          <ul>
+            <li>Smart Event Management System (PHP / MySQL) — authentication, admin dashboard, event registration</li>
+            <li>Sales Data Analysis with Pandas (Python) — ETL, EDA, visualizations, reporting</li>
+            <li>Various group mini-projects, automation scripts, and college assignments</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS (detailed) -->
+    <section id="projects" class="section card" aria-label="Projects">
+      <div class="page-title">Interdisciplinary Projects & Research</div>
+
+      <!-- Project 1 -->
+      <div class="project-card">
+        <h3>Project 1 — Smart Event Management System</h3>
+        <p><strong>Overview:</strong> Developed a web-based platform for managing events with secure authentication, role-based admin dashboard, event registration, and MySQL backend. Built with PHP, HTML/CSS and tested on XAMPP.</p>
+        <h4>Objectives</h4>
+        <ul>
+          <li>Secure login with password hashing (bcrypt)</li>
+          <li>Role-based access control for admin & users</li>
+          <li>Responsive UI & normalized database design</li>
+        </ul>
+        <p><strong>📸 Visuals and Prototypes:</strong></p>
+            
+            <img src="images/1.png" alt="Login Page Interface">
+            <p><em>Login interface with form validation</em></p>
+            
+            <img src="images/2.png" alt="Admin Dashboard">
+            <p><em>Admin dashboard showing event management controls</em></p>
+            
+            <img src="images/3.png" alt="Database Schema Diagram">
+            <p><em>MySQL database schema with normalized tables</em></p>
+
+  <p><strong>💾 Code Artifact - Authentication Logic:</strong></p>
+        
+        <h4>Key Code (authentication snippet)</h4>
+        <div class="code-snippet">
+
+        
+/* PHP — password verification (snippet) */
+if (password_verify($password, $user['password'])) {
+    $_SESSION['user_id'] = $user['id'];
+    // redirect...
+    
+}
+        </div>
+
+      <!-- Project 2 (New: Python Data Analysis) -->
+      <div class="project-card">
+        <h3>Project 2 — Sales Data Analysis with Pandas (Python)</h3>
+        <p><strong>Overview:</strong> Performed end-to-end analysis on a retail sales dataset to extract insights and build visual dashboards. Tools: Python, Pandas, Matplotlib / Seaborn (for prototyping), Jupyter Notebook.</p>
+
+        <h4>Objectives</h4>
+        <ul>
+          <li>Clean and preprocess raw sales data (dates, missing values, categorical normalization)</li>
+          <li>Perform exploratory data analysis (monthly trends, top products, category performance)</li>
+          <li>Create visualizations for stakeholders (sales over time, category share, top products)</li>
+          <li>Export summary reports (CSV / charts)</li>
+        </ul>
+
+        <h4>Methodology</h4>
+        <ul>
+          <li>Data cleaning: parse dates, fill missing sales values with 0 or median, normalize product categories</li>
+          <li>Feature engineering: created `year_month`, `week_of_year`, and `sales_per_customer`</li>
+          <li>Aggregation: groupby for monthly and category-level insights</li>
+          <li>Visualization: line charts for trend, bar charts for category, pie chart for market share</li>
+        </ul>
+
+        <h4>Key Code Snippet (Pandas)</h4>
+        <div class="code-snippet">
+# Python (pandas) snippet
+import pandas as pd
+df = pd.read_csv('sales.csv', parse_dates=['date'])
+df['year_month'] = df['date'].dt.to_period('M')
+monthly = df.groupby('year_month').sales.sum().reset_index()
+monthly.plot(kind='line')
+        </div>
+
+        <h4>Outcomes</h4>
+        <ul>
+          <li>Identified seasonal peaks (Oct–Dec) with ~25% higher sales</li>
+          <li>Top 3 products contributed 48% of revenue</li>
+          <li>Category-level insights helped inform promotional planning</li>
+        </ul>
+
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section card" aria-label="Skills">
+      <div class="page-title">Advanced Skill Development & Mastery</div>
+      <div class="card content">
+        <h2>Advanced Skill Development and Mastery</h2>
+        
+        <h3>1. Technical Proficiencies - Programming Languages</h3>
+        <p>
+            Demonstrated advanced proficiency in PHP and MySQL through the development of a complete web application 
+            with authentication, database integration, and security features. My code emphasizes readability, proper 
+            commenting, and adherence to best practices.
+        </p>
+        
+        <div class="skills">
+            <span class="skill-tag">PHP Backend Development</span>
+            <span class="skill-tag">MySQL Database Design</span>
+            <span class="skill-tag">HTML5 & CSS3</span>
+            <span class="skill-tag">Python Programming</span>
+            <span class="skill-tag">SQL Query Optimization</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">Lex Programming</span>
+        </div>
+        
+        <p><strong>Code Artifact - Clean, Documented PHP:</strong></p>
+        <div class="code-snippet">
+/**
+ * Sanitize user input to prevent XSS attacks
+ * @param string $data - Raw input data
+ * @return string - Sanitized data
+ */
+function sanitizeInput($data) {
+    $data = trim($data);           // Remove whitespace
+    $data = stripslashes($data);   // Remove backslashes
+    $data = htmlspecialchars($data); // Convert special characters
+    return $data;
+}
+
+/**
+ * Establish secure database connection with error handling
+ */
+try {
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    if ($conn->connect_error) {
+        throw new Exception("Connection failed: " . $conn->connect_error);
+    }
+    
+    // Set charset to prevent encoding issues
+    $conn->set_charset("utf8mb4");
+    
+} catch (Exception $e) {
+    // Log error securely without exposing to users
+    error_log($e->getMessage());
+    die("Database connection error. Please try again later.");
+}
+        </div>
+        
+        <h3>2. Data Analysis Tools and Database Optimization</h3>
+        <p>
+            Applied database normalization principles (1NF, 2NF, 3NF) to create efficient schemas for the event 
+            management system. Developed understanding of entity relationships, primary/foreign key constraints, 
+            indexing strategies, and query optimization techniques using EXPLAIN statements in MySQL.
+        </p>
+        
+        <h3>3. Leadership and Communication Skills</h3>
+        <p>
+            Created comprehensive documentation for projects including README files, code comments, and user guides. 
+            Presented technical concepts through Google Slides presentations for academic assignments. Effectively 
+            communicated complex technical problems when seeking guidance, demonstrating ability to articulate 
+            challenges clearly and ask focused questions.
+        </p>
+        
+        <h3>4. Creative Competencies - Design Thinking</h3>
+        <p>
+            Applied user-centered design principles to create intuitive interfaces for the event management system. 
+            Made deliberate design choices regarding color schemes, layout organization, and navigation flow to 
+            enhance user experience. Demonstrated artistic expression through CSS styling while maintaining 
+            functionality and accessibility.
+        </p>
+      </div>
+    </section>
+
+    <!-- CERTIFICATIONS -->
+<section id="certs" class="section card" aria-label="Certifications">
+  <div class="page-title">Certifications</div>
+  <div class="card content">
+
+    <ul>
+      <li><strong>NPTEL — Web Technologies / Programming</strong><br>
+        Learned fundamentals of frontend/backend development, HTTP, XML, PHP basics, and SQL integration. Completed weekly assignments and proctored exam with distinction.
+      </li>
+
+      <li><strong>Python for Everybody — Online Course</strong><br>
+        Covered Python basics, file handling, regular expressions, API usage, and introductory data analysis. Built mini-projects including calculators, parsers, and visualization scripts.
+      </li>
+
+      <li><strong>Data Analysis Hands-On Training</strong><br>
+        Worked with Pandas, NumPy, and Matplotlib to clean, process, and visualize datasets. Completed end-to-end EDA on retail sales data and created summary reports.
+      </li>
+
+      <li><strong>Cybersecurity Essentials (Intro)</strong><br>
+        Explored secure coding practices, hashing, encryption basics, SQL injection prevention, and OWASP-based guidelines for developing safe applications.
+      </li>
+    </ul>
+
+  </div>
+</section>
+
+
+    <!-- LEADERSHIP -->
+ <section id="leadership" class="section card" aria-label="Leadership">
+  <div class="page-title">Collaborative & Leadership Experiences</div>
+  <div class="card content">
+
+    <p>
+      I have collaborated on numerous team-based academic projects where I often took responsibility for
+      backend development, documentation, or database design. My leadership style focuses on clear communication,
+      practical timelines, and ensuring every team member contributes confidently.
+    </p>
+
+    <h4>Key Leadership Contributions</h4>
+    <ul>
+      <li>Conducted weekly sprint reviews, task delegation, and progress tracking during group projects.</li>
+      <li>Led discussions on database normalization and security-focused schema design.</li>
+      <li>Helped teammates debug PHP, SQL queries, and JavaScript errors during project deadlines.</li>
+      <li>Provided demonstrations and walkthroughs of our project workflow during classroom presentations.</li>
+      <li>Encouraged an inclusive environment where everyone could share coding ideas freely.</li>
+    </ul>
+
+    <p>
+      These experiences strengthened my teamwork capabilities and helped me understand the importance of empathy,
+      patience, and clarity—skills essential for future technical leadership roles.
+    </p>
+
+  </div>
+</section>
+
+
+    <!-- GLOBAL (Data Privacy) -->
+ <section id="global" class="section card" aria-label="Global issue">
+  <div class="page-title">Global Issue — Data Privacy</div>
+  <div class="card content">
+
+    <p>
+      In today’s digital world, data privacy has become a global priority as organizations collect increasing
+      amounts of user information. Understanding how data is stored, processed, and shared is essential to building
+      responsible applications.
+    </p>
+
+    <p>
+      While creating the Smart Event Management System, I implemented several privacy-focused practices:
+    </p>
+
+    <ul>
+      <li><strong>Password hashing</strong> using secure algorithms such as bcrypt.</li>
+      <li><strong>Minimal data retention</strong> — storing only the essential information needed for login and events.</li>
+      <li><strong>Prepared statements</strong> to defend against SQL injection and malicious input.</li>
+      <li><strong>User consent visibility</strong> before submitting forms or storing data.</li>
+    </ul>
+
+    <p>
+      I also explored modern privacy laws such as <strong>GDPR</strong> and <strong>India’s DPDP Act</strong>, which stress transparency,
+      user rights, secure storage, and ethical data processing. These principles guide how I approach projects and
+      reinforce why privacy must be respected at every step of development.
+    </p>
+
+  </div>
+</section>
+
+
+    <!-- ETHICS -->
+<section id="ethics" class="section card" aria-label="Ethics">
+  <div class="page-title">Ethics & Responsible Development</div>
+  <div class="card content">
+
+    <p>
+      Ethical responsibilities in software engineering extend beyond writing clean code—they involve ensuring fairness,
+      transparency, and safety for every user interacting with the product. I adopt a cautious, security-first mindset
+      when developing any application.
+    </p>
+
+    <h4>Ethical Practices Followed</h4>
+    <ul>
+      <li>🔒 <strong>Using hashed passwords</strong> instead of storing plain text credentials.</li>
+      <li>🛡️ <strong>Implementing SQL prepared statements</strong> to prevent database attacks.</li>
+      <li>📉 <strong>Reducing unnecessary data collection</strong> to respect user privacy.</li>
+      <li>📝 <strong>Writing transparent disclaimers</strong> for how user data is handled.</li>
+      <li>✔️ <strong>Testing features thoroughly</strong> before deployment to avoid user-impacting errors.</li>
+    </ul>
+
+    <p>
+      These steps reinforce my belief that technology should help people—not put them at risk. Ethical coding is not
+      just good practice; it is a moral obligation.
+    </p>
+
+  </div>
+</section>
+
+<!-- FUTURE -->
+<section id="goals" class="section card" aria-label="Goals">
+  <div class="page-title">Future Goals</div>
+  <div class="card content">
+
+    <p>
+      My long-term objective is to become a skilled Software Developer or Data Analyst working on meaningful,
+      impactful digital solutions. To reach that point, I am actively expanding my skill set and building stronger
+      project foundations.
+    </p>
+
+    <h4>Short-Term Goals (Next 6–12 Months)</h4>
+    <ul>
+      <li>Learn <strong>React.js</strong> and <strong>Node.js</strong> for full-stack development.</li>
+      <li>Understand <strong>REST APIs</strong> and integrate them into real projects.</li>
+      <li>Strengthen SQL knowledge and explore <strong>advanced database optimization</strong>.</li>
+      <li>Build 2–3 strong portfolio projects with clean UI and secure backend.</li>
+      <li>Apply for internships to gain industry experience.</li>
+    </ul>
+
+    <h4>Long-Term Goals</h4>
+    <ul>
+      <li>Master cloud technologies such as <strong>AWS / Azure</strong>.</li>
+      <li>Learn containerization tools (<strong>Docker, Kubernetes</strong>).</li>
+      <li>Become proficient with DevOps workflows.</li>
+      <li>Contribute consistently to open-source projects.</li>
+      <li>Grow into a role where I can lead development teams or innovative research work.</li>
+    </ul>
+
+    <p>
+      My goals motivate me to keep learning, practicing, and improving — one project at a time.
+    </p>
+
+  </div>
+</section>
+
+
+    <!-- SWOT (moved to its own section) -->
+    <section id="swot" class="section card" aria-label="SWOT">
+      <div class="page-title">SWOT Analysis</div>
+      <div class="card content">
+        <div class="swot-grid">
+          <div class="swot-item strengths">
+            <h4>💪 Strengths</h4>
+            <ul>
+              <li>Strong PHP/MySQL foundation</li>
+              <li>Problem-solving & debugging</li>
+              <li>Self-directed learning</li>
+              <li>Attention to security</li>
+            </ul>
+          </div>
+
+          <div class="swot-item weaknesses">
+            <h4>⚠ Weaknesses</h4>
+            <ul>
+              <li>Limited modern JS framework experience</li>
+              <li>No cloud deployment experience yet</li>
+              <li>Needs more Git advanced workflows</li>
+            </ul>
+          </div>
+
+          <div class="swot-item opportunities">
+            <h4>🚀 Opportunities</h4>
+            <ul>
+              <li>High demand for full-stack roles</li>
+              <li>Cloud & DevOps growth</li>
+              <li>Open-source collaboration</li>
+            </ul>
+          </div>
+
+          <div class="swot-item threats">
+            <h4>⚡ Threats</h4>
+            <ul>
+              <li>Rapid tech evolution</li>
+              <li>Competitive job market</li>
+              <li>Automation impacts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section id="conclusion" class="section card" aria-label="Conclusion">
+      <div class="page-title">Conclusion & Self-Assessment</div>
+      <div class="card content">
+        <h4>Final Reflection</h4>
+        <p>This portfolio shows growth from a beginner to a developer building secure applications and analyzing data. I continue improving my skills and am committed to lifelong learning.</p>
+      </div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <section id="testimonial" class="section card" aria-label="Testimonial">
+      <div class="page-title">Testimonial</div>
+      <div class="testimonial">
+        <p>“Mili has demonstrated exceptional dedication to learning web development technologies. Her work on the Smart Event Management System showcases strong technical skills and a solid understanding of security best practices. She asks insightful questions and persists through challenges — a valuable trait for any engineer.”</p>
+        <strong>— Professor, Web Technology Course Instructor, Pandit Deendayal Energy University</strong>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section card" aria-label="Contact">
+      <div class="page-title">Contact</div>
+      <div class="card content">
+        <p><strong>Email:</strong> milipatel@example.com</p>
+        <p><strong>LinkedIn:</strong> linkedin.com/in/mili-patel</p>
+        <p><strong>Location:</strong> Gandhinagar, India</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2025 Mili Patel — Pandit Deendayal Energy University</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+
+const sections = document.querySelectorAll('.section');
+function hideAll(){sections.forEach(s=>s.classList.remove('active'))}
+function showSection(id){
+  hideAll();
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+
+function openTOC(){
+  hideAll();
+  document.getElementById('table-of-contents').classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+
+function openSectionFromTOC(targetId){
+  hideAll();
+  const el = document.getElementById(targetId);
+  if(el) el.classList.add('active');
+  document.querySelector('.main').scrollTop = 0;
+}
+
+document.querySelectorAll('#nav a').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    const target = a.getAttribute('data-target');
+    if(target) showSection(target);
+  });
+});
+
+document.querySelectorAll('[data-target]').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    e.preventDefault();
+    const target = btn.getAttribute('data-target');
+    if(target) showSection(target);
+  });
+});
+
+hideAll();
+document.getElementById('cover-page').classList.add('active');
+
+</script>
+</body>
+</html>
